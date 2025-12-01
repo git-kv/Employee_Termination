@@ -1,7 +1,12 @@
-import os, sys
+import os, sys, logging
 
+from datetime import datetime
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLineEdit, QPushButton, QSpacerItem, QCalendarWidget, QCheckBox, QMessageBox
+
+today = datetime.today().strftime('%Y-%m-%d')
+log_path = 'C:\\Users\\KVoelker\\repos\\logs\\add_to_term_list_' + today + '.log'
+logging.basicConfig(filename=log_path, level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -122,6 +127,8 @@ class MainWindow(QMainWindow):
             self.add_to_term_list_button.setEnabled(True)
 
     def add_to_term_list(self):
+        logging.info('########## Begin adding information to termination list ##########')
+
         first_name_text = str(self.first_name_text_box.text())
         last_name_text = str(self.last_name_text_box.text())
         username_text = str(self.username_text_box.text())
@@ -157,21 +164,28 @@ class MainWindow(QMainWindow):
         message_box.exec()
 
     def update_csv(self, first_name, last_name, username, manager, hr, term_date):
-        print(first_name)
-        print(last_name)
-        print(username)
-        print(manager)
-        print(hr)
-        print(term_date)
+        logging.info('Record of information input by user.')
+        logging.info('First name: ' + first_name)
+        logging.info('Last name: ' + last_name)
+        logging.info('Username: ' + username)
+        logging.info('Manager email: ' + manager)
+        logging.info('HR email: ' + hr)
+        logging.info('Term date: ' + term_date)
+
+        term_list_csv = '\\\\file\\path\\of\\csv\\term_list.csv'
+        logging.info('Begining update of ' + term_list_csv)
 
     def disable_immediately(self, username):
         immediate_term_path = 'C:\\Users\\KVoelker\\' + username
+
+        logging.info('Immediate termination requested, creating file that will trigger immediate account disablement.')
+
         if not os.path.exists(immediate_term_path):
             with open(immediate_term_path, 'w') as file:
                 file.write(username)
-            print('file created')
+            logging.info('Created file ' + immediate_term_path + ' account will be disabled shortly.')
         else:
-            print('file already exists')
+            logging.warning('File ' + immediate_term_path + ' already exists. Please wait for the account to be disabled.')
     
 app = QApplication(sys.argv)
 
