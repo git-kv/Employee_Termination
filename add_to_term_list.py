@@ -1,7 +1,7 @@
 import os, sys
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLineEdit, QPushButton, QSpacerItem, QCalendarWidget, QCheckBox
+from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLineEdit, QPushButton, QSpacerItem, QCalendarWidget, QCheckBox, QMessageBox
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -52,6 +52,7 @@ class MainWindow(QMainWindow):
         self.add_to_term_list_button = QPushButton('Add to Term List')
         self.add_to_term_list_button.setFixedWidth(button_width)
         self.add_to_term_list_button.setEnabled(False)
+        self.add_to_term_list_button.clicked.connect(self.add_to_term_list)
 
         self.open_term_list_button = QPushButton('Open Term List')
         self.open_term_list_button.setFixedWidth(button_width)
@@ -120,6 +121,13 @@ class MainWindow(QMainWindow):
         else:
             self.add_to_term_list_button.setEnabled(True)
 
+    def add_to_term_list(self):
+        print('test')
+        first_name_text = str(self.first_name_text_box.text())
+        last_name_text = str(self.last_name_text_box.text())
+        username_text = str(self.username_text_box.text())
+        manager_email_text = str(self.manager_email_text_box.text())
+        hr_email_text = str(self.hr_email_text_box.text())
     
 app = QApplication(sys.argv)
 
