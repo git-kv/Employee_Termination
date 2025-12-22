@@ -137,6 +137,9 @@ class MainWindow(QMainWindow):
         immediate_checked = self.immediate_term_check_box.isChecked()
         term_date = self.term_date_calendar.selectedDate().toString('MM/dd/yyyy')
 
+        current_user = os.environ.get('USER') or os.environ.get('USERNAME')
+        logging.info('The following information was submitted by ' + current_user + " to disable " + first_name_text + "'s account")
+
         self.update_csv(first_name_text,
                         last_name_text,
                         username_text,
@@ -164,7 +167,7 @@ class MainWindow(QMainWindow):
         message_box.exec()
 
     def update_csv(self, first_name, last_name, username, manager, hr, term_date):
-        logging.info('Record of information input by user.')
+        
         logging.info('First name: ' + first_name)
         logging.info('Last name: ' + last_name)
         logging.info('Username: ' + username)
