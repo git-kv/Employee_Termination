@@ -1,7 +1,7 @@
-import os, sys, logging
+import os, sys, logging, csv
 
-from datetime import datetime
-from PyQt6.QtCore import Qt, QCoreApplication
+from datetime import datetime, timedelta
+from PyQt6.QtCore import Qt, QCoreApplication, QDate
 from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow, QTextEdit, QVBoxLayout, QWidget, QLineEdit, QPushButton, QSpacerItem, QCalendarWidget, QCheckBox, QMessageBox
 
 today = datetime.today().strftime('%Y-%m-%d')
@@ -136,6 +136,11 @@ class MainWindow(QMainWindow):
         hr_email_text = str(self.hr_email_text_box.text())
         immediate_checked = self.immediate_term_check_box.isChecked()
         term_date = self.term_date_calendar.selectedDate().toString('MM/dd/yyyy')
+        tmp_date = self.term_date_calendar.selectedDate().toPyDate()
+        convert_to_shared_date = self.date_by_adding_business_days(tmp_date, 1).strftime("%m/%d/%Y")
+        second_notification_date = self.date_by_adding_business_days(tmp_date, 14).strftime('%m/%d/%Y')
+        deletion_date = self.date_by_adding_business_days(tmp_date, 30).strftime('%m/%d/%Y')
+        final_warning_date = self.date_by_adding_business_days(tmp_date, 29).strftime("%m/%d/%Y")
 
         current_user = os.environ.get('USER') or os.environ.get('USERNAME')
         logging.info('The following information was submitted by ' + current_user + " to disable " + first_name_text + "'s account")
@@ -146,7 +151,11 @@ class MainWindow(QMainWindow):
                             username_text,
                             manager_email_text,
                             hr_email_text,
-                            term_date)
+                            term_date,
+                            convert_to_shared_date,
+                            second_notification_date,
+                            deletion_date,
+                            final_warning_date)
         except:
             error_description = 'Failed to update CSV'
             logging.exception(error_description)
@@ -178,7 +187,7 @@ class MainWindow(QMainWindow):
                             )
         message_box.exec()
 
-    def update_csv(self, first_name, last_name, username, manager, hr, term_date):
+    def update_csv(self, first_name, last_name, username, manager, hr, term_date, convert_to_shared_date, second_notification_date, deletion_date, final_warning_date):
         
         logging.info('First name: ' + first_name)
         logging.info('Last name: ' + last_name)
@@ -186,9 +195,19 @@ class MainWindow(QMainWindow):
         logging.info('Manager email: ' + manager)
         logging.info('HR email: ' + hr)
         logging.info('Term date: ' + term_date)
+        logging.info('Convert to shared mailbox date: ' + convert_to_shared_date)
+        logging.info('Second email notification date: ' + second_notification_date)
+        logging.info('Final email notification warning date: ' + final_warning_date)
+        logging.info('Deletion date: ' + deletion_date)
 
         term_list_csv = '\\\\file\\path\\of\\csv\\term_list.csv'
         logging.info('Begining update of ' + term_list_csv)
+
+        new_data = [first_name, last_name, username, manager, hr, term_date]
+
+        #with open(term_list_csv, 'a', newline='') as file:
+        #    writer = csv.writer(file)
+        #    writer.writerow(new_data)
 
     def disable_immediately(self, username):
         immediate_term_path = 'C:\\Users\\KVoelker\\repos\\immediate_account_disablement\\' + username
@@ -207,7 +226,19 @@ class MainWindow(QMainWindow):
         error_message_box.setWindowTitle('Error')
         error_message_box.setText(message)
         error_message_box.exec()
-    
+
+    def date_by_adding_business_days(self, from_date, add_days):
+        business_days_to_add = add_days
+        current_date = from_date
+        while business_days_to_add > 0:
+            current_date += timedelta(days=1)
+            weekday = current_date.weekday()
+            if weekday >=5:
+                continue
+            business_days_to_add -= 1
+        return current_date
+
+
 app = QApplication(sys.argv)
 
 window = MainWindow()
