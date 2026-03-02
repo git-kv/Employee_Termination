@@ -2,9 +2,9 @@
 # immediate termination waiting to be processed.
 $root_path = "\\eocservices\apps$\programs\scripts\separation\immediate_account_disablement\"
 $smtp_server = "exnode2.dartadvantage.com"
-$from = "ImmediateTermAlerts@dart.net"
-$vip_recipients = "ImmediateTermAlerts@dart.net"
-$default_recipients = "ImmediateTermAlerts@dart.net"
+$from = "ImmediateTermScript@dart.net"
+$vip_recipients = "kvoelker@dart.net"
+$default_recipients = "kvoelker@dart.net"
 $Global:disable_account = $false
 
 while ($true) {
